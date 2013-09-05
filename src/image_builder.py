@@ -55,38 +55,41 @@ class MosaicImage(object):
         """
             Process mosaic
         """
-        avg = 200
-        color = None
-        pix_size = 4
-        xs = self.img.size[0] / pix_size
-        ys = self.img.size[1] / pix_size
-        
-        for i in range(0, xs):
-            for j in range(0,ys):
-                x0 = (i * pix_size)
-                y0 = (j * pix_size)
-                
-                if x0 >= self.img.size[0] - pix_size:
-                    x0 = self.img.size[0] - pix_size
-                
-                if y0 >= self.img.size[1] - pix_size:
-                    y0 = self.img.size[1] - pix_size
-                            
-                color = extract_color(self.img, x0, y0, x0 + pix_size, y0 + pix_size)
-                
-                some_pixel= False
-                for f in fpixel_list[0:1]:
+        for f in fpixel_list:
+            avg = 50
+            color = None
+            white_color = 240
+            xs = self.img.size[0] / f.img.size[0]
+            ys = self.img.size[1] / f.img.size[1]
+            
+            for i in range(0, xs):
+                for j in range(0,ys):
+                    x0 = (i * f.img.size[0])
+                    y0 = (j * f.img.size[1])
                     
+                    if x0 > self.img.size[0] - f.img.size[0]:
+                        x0 = self.img.size[0] - f.img.size[0]
+                    
+                    if y0 > self.img.size[1] - f.img.size[1]:
+                        y0 = self.img.size[1] - f.img.size[1]
+                                
+                    color = extract_color(self.img, x0, y0, x0 + f.img.size[0], y0 + f.img.size[1])
+                    
+                    # white
+                    if color[0] > white_color and color[0] > white_color and color[0] > white_color:
+                        continue 
+                        
                     sum_diff = 0
                     for RGB in range(0,3):
-                        sum_diff += math.fabs(color[RGB]-f.color[RGB])
-                        
+                        sum_diff += (math.fabs(color[RGB]-f.color[RGB]))/3
+                            
                     if sum_diff < avg:
                         some_pixel = True
                         print "Coloca imagem X: %d Y: %d"%(x0,y0)
-                    else:
-                        fk_pixel = Image.new("RGB", (pix_size,pix_size), rgb(color[0],color[1],color[2]))
-                        self.mosaic.paste(fk_pixel,(x0,y0))        
+                        self.mosaic.paste(f.img,(x0,y0))
+#                     else:
+#                         fk_pixel = Image.new("RGB", (pix_size,pix_size), rgb(color[0],color[1],color[2]))
+#                         self.mosaic.paste(fk_pixel,(x0,y0))        
               
     def finish(self):
         self.mosaic.save("test" + ".mosaic", "JPEG")
