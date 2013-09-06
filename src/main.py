@@ -27,5 +27,6 @@ if __name__ == "__main__":
     if len(sys.argv) < 3:
         print "Error"
     
+    print sys.argv[2:len(sys.argv)]
     main(sys.argv[1],sys.argv[2:len(sys.argv)])
     

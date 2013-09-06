@@ -49,7 +49,7 @@ class MosaicImage(object):
     
     def __init__(self, rfile):
         self.img = Image.open(rfile)
-        self.mosaic = Image.new("RGB", self.img.size, "white")
+        self.mosaic = Image.new("RGBA", self.img.size, "white")
         
     def process(self, fpixel_list):
         """
@@ -87,9 +87,9 @@ class MosaicImage(object):
                         some_pixel = True
                         print "Coloca imagem X: %d Y: %d"%(x0,y0)
                         self.mosaic.paste(f.img,(x0,y0))
-#                     else:
-#                         fk_pixel = Image.new("RGB", (pix_size,pix_size), rgb(color[0],color[1],color[2]))
-#                         self.mosaic.paste(fk_pixel,(x0,y0))        
+                    else:
+                        fk_pixel = Image.new("RGB", (f.img.size[0],f.img.size[1]), rgb(color[2],color[1],color[0]))
+                        self.mosaic.paste(fk_pixel,(x0,y0))        
               
     def finish(self):
-        self.mosaic.save("test" + ".mosaic", "JPEG")
+        self.mosaic.save("test" + ".mosaic", "PNG")
